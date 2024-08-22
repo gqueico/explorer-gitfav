@@ -64,6 +64,10 @@ header {
   outline: none;
 }
 
+.search input:focus {
+  outline: 2px solid #4A808C;
+}
+
 .search input::placeholder {
   color: #7C7C8A;
 }
