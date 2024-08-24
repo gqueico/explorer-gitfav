@@ -35,14 +35,14 @@ body {
 
 .container {
   width: min(112rem, 77.8vw);
-  margin: 0 auto;
-  padding-block: 11.5rem;
+  margin: 11.5rem auto;
 }
 
 header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 8.6rem;
 }
 
 .search {
