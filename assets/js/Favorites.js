@@ -17,8 +17,19 @@ export class Favorites {
         name: "Diego Fernandes",
         public_repos: '76',
         followers: '120'
+      },
+      {
+        login: 'gqueico',
+        name: "Guilherme Costa",
+        public_repos: '26',
+        followers: '0'
       }
     ]
+  }
+
+  delete(user) {
+    this.entries = this.entries.filter(entry => entry.login !== user.login)
+    this.update()
   }
 }
 
@@ -42,9 +53,17 @@ export class FavoritesView extends Favorites {
       row.querySelector('.user a').href = `https://github.com/${user.login}`
       row.querySelector('.user a').target = '_blank'
       row.querySelector('.user p').textContent = user.name
-      row.querySelector('.user span').textContent = user.login
+      row.querySelector('.user span').textContent = `/${user.login}`
       row.querySelector('.repositories').textContent = user.public_repos
       row.querySelector('.followers').textContent = user.followers
+
+      row.querySelector('.remove').onclick = () => {
+        const isOK = confirm(`Deseja remover ${user.name}`)
+
+        if(isOK) {
+          this.delete(user)
+        }
+      }
 
       this.tbody.append(row)
     })
