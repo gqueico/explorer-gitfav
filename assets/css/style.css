@@ -197,3 +197,29 @@ table tbody tr:last-child {
   background-color: transparent;
   cursor: pointer;
 }
+
+.no__favorites {
+  display: none;
+}
+
+.no__favorites.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 6rem;
+  height: 52.4rem;
+  background-color: #030B0D;
+}
+
+.no__favorites img {
+  width: 13.2rem;
+  height: 12.5rem;
+}
+
+.no__favorites span {
+  font-family: "Roboto Mono", system-ui;
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 2.48rem;
+  color: #4E5455;
+}
