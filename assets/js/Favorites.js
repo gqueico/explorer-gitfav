@@ -1,17 +1,4 @@
-export class GithubUser {
-  static search(username) {
-    const endpoint = `https://api.github.com/users/${username}`
-
-    return fetch(endpoint)
-    .then(data => data.json())
-    .then(({ login, name, public_repos, followers }) => ({
-        login,
-        name,
-        public_repos,
-        followers
-    }))
-  }
-}
+import { GithubUser } from './GithubUser.js'
 
 export class Favorites {
   constructor(root) {
@@ -23,9 +10,38 @@ export class Favorites {
     this.entries = JSON.parse(localStorage.getItem('@gitfav:')) || []
   }
 
+  save() {
+    localStorage.setItem('@gitfav:', JSON.stringify(this.entries))
+  }
+
+  async add(username) {
+    try {
+      const userExists = this.entries.find(entry => entry.login === username)
+
+      if(userExists) {
+        throw new Error(`${username} já foi favoritado!`)
+      }
+
+      const user = await GithubUser.search(username)
+
+      if(user.login === undefined) {
+        throw new Error('Perfil não encontrado!')
+      }
+
+      this.entries = [user, ...this.entries]
+      this.update()
+      this.save()
+
+    } catch(error) {
+      alert(error.message)
+      this.update()
+    }
+  }
+
   delete(user) {
     this.entries = this.entries.filter(entry => entry.login !== user.login)
-    this.update() 
+    this.update()
+    this.save()
   }
 }
 
@@ -34,12 +50,26 @@ export class FavoritesView extends Favorites {
     super(root)
 
     this.tbody = this.root.querySelector('table tbody')
+    this.input = this.root.querySelector('.search input')
 
     this.update()
+    this.onadd()
+  }
+
+  onadd() {
+    const addFavorite = this.root.querySelector('.search button')
+
+    addFavorite.onclick = () => {
+     const { value } = this.input
+     
+     this.add(value)
+    }
   }
 
   update() {
+    this.noFavorite()
     this.removeAllTr()
+    this.clearInput()
 
     this.entries.forEach(user => {
       const row = this.createRow()
@@ -70,14 +100,14 @@ export class FavoritesView extends Favorites {
 
     tr.innerHTML = `
       <td class="user">
-        <img src="https://github.com/maykbrito.png" alt="Imagem de maykbrito">
-        <a href="https://github.com/maykbrito" target="_blank">
-          <p>Mayk Brito</p>
-          <span>/maykbrito</span>
+        <img src="" alt="">
+        <a href="" target="_blank">
+          <p></p>
+          <span></span>
         </a>
       </td>
-      <td class="repositories">123</td>
-      <td class="followers">1234</td>
+      <td class="repositories"></td>
+      <td class="followers"></td>
       <td>
         <button class="remove">Remover</button>
       </td>
@@ -87,5 +117,20 @@ export class FavoritesView extends Favorites {
 
   removeAllTr() {
     this.tbody.querySelectorAll('tr').forEach(tr => tr.remove())
+  }
+
+  clearInput() {
+    const input = this.root.querySelector('.search input')
+    input.value = ''
+  }
+
+  noFavorite() {
+    const emptyFavorites = this.root.querySelector('.no__favorites')
+    
+    if(this.entries.length === 0) {
+      emptyFavorites.classList.add('show')
+    } else {
+      emptyFavorites.classList.remove('show')
+    }
   }
 }
