@@ -50,7 +50,6 @@ export class FavoritesView extends Favorites {
     super(root)
 
     this.tbody = this.root.querySelector('table tbody')
-    this.input = this.root.querySelector('.search input')
 
     this.update()
     this.onadd()
@@ -59,8 +58,16 @@ export class FavoritesView extends Favorites {
   onadd() {
     const addFavorite = this.root.querySelector('.search button')
 
+    window.document.onkeydown = event => {
+      if(event.key === 'Enter'){ 
+        const { value } = this.root.querySelector('.search input')
+
+        this.add(value)
+      }
+    }
+
     addFavorite.onclick = () => {
-     const { value } = this.input
+     const { value } = this.root.querySelector('.search input')
      
      this.add(value)
     }
